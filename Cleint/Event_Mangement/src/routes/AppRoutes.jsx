@@ -1,6 +1,4 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
 
 // Auth Pages
 import Login from "../pages/auth/Login";
@@ -26,161 +24,36 @@ import AdminProfile from "../pages/admin/Profile";
 import AdminUpdateProfile from "../pages/admin/UpdateProfile";
 
 function AppRoutes() {
-  const { user } = useContext(AuthContext);
-
-  // Role-Based Protection
-  const ProtectedRoute = ({ children, role }) => {
-    if (!user) return <Navigate to="/" />;
-    if (role && user.role !== role) return <Navigate to="/" />;
-    return children;
-  };
-
   return (
     <BrowserRouter>
       <Routes>
 
-        {/* ================= AUTH ================= */}
-        <Route path="/" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        {/* 🔥 Default Route → Direct Dashboard */}
+        <Route path="/" element={<Signup />} />
 
-        {/* ================= STUDENT ROUTES ================= */}
-        <Route
-          path="/student/dashboard"
-          element={
-            <ProtectedRoute role="student">
-              <StudentDashboard />
-            </ProtectedRoute>
-          }
-        />
+        {/* If you want Admin dashboard default instead */}
+        {/* <Route path="/" element={<AdminDashboard />} /> */}
 
-        <Route
-          path="/student/events"
-          element={
-            <ProtectedRoute role="student">
-              <StudentAllEvents />
-            </ProtectedRoute>
-          }
-        />
+        {/* Student Routes */}
+        <Route path="/student/dashboard" element={<StudentDashboard />} />
+        <Route path="/student/events" element={<StudentAllEvents />} />
+        <Route path="/student/event/:id" element={<EventDetails />} />
+        <Route path="/student/register/:id" element={<RegisterEvent />} />
+        <Route path="/student/profile" element={<StudentProfile />} />
+        <Route path="/student/update-profile" element={<StudentUpdateProfile />} />
 
-        <Route
-          path="/student/event/:id"
-          element={
-            <ProtectedRoute role="student">
-              <EventDetails />
-            </ProtectedRoute>
-          }
-        />
+        {/* Admin Routes */}
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/events" element={<AdminAllEvents />} />
+        <Route path="/admin/add-event" element={<AddEvent />} />
+        <Route path="/admin/update-event/:id" element={<UpdateEvent />} />
+        <Route path="/admin/delete-event/:id" element={<DeleteEvent />} />
+        <Route path="/admin/participants/:id" element={<ShowParticipants />} />
+        <Route path="/admin/add-coordinator" element={<AddCoordinator />} />
+        <Route path="/admin/profile" element={<AdminProfile />} />
+        <Route path="/admin/update-profile" element={<AdminUpdateProfile />} />
 
-        <Route
-          path="/student/register/:id"
-          element={
-            <ProtectedRoute role="student">
-              <RegisterEvent />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/student/profile"
-          element={
-            <ProtectedRoute role="student">
-              <StudentProfile />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/student/update-profile"
-          element={
-            <ProtectedRoute role="student">
-              <StudentUpdateProfile />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* ================= ADMIN ROUTES ================= */}
-        <Route
-          path="/admin/dashboard"
-          element={
-            <ProtectedRoute role="admin">
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/events"
-          element={
-            <ProtectedRoute role="admin">
-              <AdminAllEvents />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/add-event"
-          element={
-            <ProtectedRoute role="admin">
-              <AddEvent />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/update-event/:id"
-          element={
-            <ProtectedRoute role="admin">
-              <UpdateEvent />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/delete-event/:id"
-          element={
-            <ProtectedRoute role="admin">
-              <DeleteEvent />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/participants/:id"
-          element={
-            <ProtectedRoute role="admin">
-              <ShowParticipants />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/add-coordinator"
-          element={
-            <ProtectedRoute role="admin">
-              <AddCoordinator />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/profile"
-          element={
-            <ProtectedRoute role="admin">
-              <AdminProfile />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/update-profile"
-          element={
-            <ProtectedRoute role="admin">
-              <AdminUpdateProfile />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* ================= UNKNOWN ROUTE ================= */}
+        {/* Unknown Route Redirect */}
         <Route path="*" element={<Navigate to="/" />} />
 
       </Routes>

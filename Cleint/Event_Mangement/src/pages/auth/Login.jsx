@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
 
 function Login() {
   const navigate = useNavigate();
@@ -16,7 +15,7 @@ function Login() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
 
     if (!form.email || !form.password) {
@@ -24,27 +23,18 @@ function Login() {
       return;
     }
 
-    try {
-      setLoading(true);
+    setLoading(true);
 
-      const response = await axios.post(
-        "http://localhost:5000/api/student/login",
-        form
-      );
+    // ✅ No authentication
+    // Just store email (optional)
+    localStorage.setItem("user", JSON.stringify({ email: form.email }));
 
-      // Save user data (if backend returns it)
-      localStorage.setItem("user", JSON.stringify(response.data));
+    alert("Login Successful ✅");
 
-      alert("Login Successful ✅");
+    // Direct redirect
+    navigate("/student/dashboard");
 
-      navigate("/student/dashboard");
-
-    } catch (err) {
-      console.log(err);
-      alert(err.response?.data?.message || "Login Failed ❌");
-    } finally {
-      setLoading(false);
-    }
+    setLoading(false);
   };
 
   return (
@@ -115,7 +105,6 @@ const styles = {
     padding: "10px",
     borderRadius: "6px",
     border: "1px solid #ccc",
-    fontSize: "14px",
   },
   button: {
     padding: "10px",
@@ -124,12 +113,10 @@ const styles = {
     border: "none",
     borderRadius: "6px",
     cursor: "pointer",
-    fontSize: "14px",
   },
   signupText: {
     marginTop: "15px",
     textAlign: "center",
-    fontSize: "14px",
   },
   link: {
     color: "#007bff",

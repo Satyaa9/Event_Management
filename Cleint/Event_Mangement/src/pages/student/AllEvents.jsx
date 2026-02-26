@@ -1,13 +1,34 @@
-import { useContext } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import Navbar from "../../components/Navbar";
 import Button from "../../components/Button";
-import { EventContext } from "../../context/EventContext";
 
 function AllEvents() {
-  const { events } = useContext(EventContext);
   const navigate = useNavigate();
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+ const fetchEvents = async () => {
+  try {
+    const response = await axios.get(
+      "http://10.95.236.74:5000/api/events"
+    );
+
+    console.log("API RESPONSE:", response.data); // 👈 ADD THIS
+
+    setEvents(response.data);
+    setLoading(false);
+
+  } catch (error) {
+    console.log("Error fetching events:", error);
+    setLoading(false);
+  }
+};
   return (
     <>
       <Navbar />
@@ -15,12 +36,14 @@ function AllEvents() {
       <div style={styles.container}>
         <h2 style={styles.heading}>Available Events</h2>
 
-        {events.length === 0 ? (
+        {loading ? (
+          <p>Loading events...</p>
+        ) : events.length === 0 ? (
           <p style={styles.noEvent}>No events available right now.</p>
         ) : (
           <div style={styles.grid}>
             {events.map((event) => (
-              <div key={event.id} style={styles.card}>
+              <div key={event._id} style={styles.card}>
                 <h3>{event.title}</h3>
                 <p style={styles.category}>{event.category}</p>
                 <p><strong>Date:</strong> {event.date}</p>
@@ -29,11 +52,11 @@ function AllEvents() {
                 <div style={styles.buttonGroup}>
                   <Button
                     text="View Details"
-                    onClick={() => navigate(`/student/event/${event.id}`)}
+                    onClick={() => navigate(`/student/event/${event._id}`)}
                   />
                   <Button
                     text="Register"
-                    onClick={() => navigate(`/student/register/${event.id}`)}
+                    onClick={() => navigate(`/student/register/${event._id}`)}
                   />
                 </div>
               </div>

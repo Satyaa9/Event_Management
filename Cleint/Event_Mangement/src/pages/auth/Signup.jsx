@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function Signup() {
@@ -29,19 +29,19 @@ function Signup() {
     try {
       setLoading(true);
 
-      const response = await axios.post(
+      await axios.post(
         "http://localhost:5000/api/student/signup",
         form
       );
 
       alert("Signup Successful ✅");
-      navigate("/");
+
+      // ✅ Directly go to dashboard
+      navigate("/dashboard");
 
     } catch (err) {
-  console.log("FULL ERROR:", err);
-  console.log("RESPONSE:", err.response);
-  alert(err.response?.data?.message || "Signup Failed ❌");
-} finally {
+      alert("Signup Failed ❌");
+    } finally {
       setLoading(false);
     }
   };
@@ -92,13 +92,6 @@ function Signup() {
             {loading ? "Creating Account..." : "Signup"}
           </button>
         </form>
-
-        <p style={styles.loginText}>
-          Already have an account?{" "}
-          <Link to="/" style={styles.link}>
-            Login
-          </Link>
-        </p>
       </div>
     </div>
   );
@@ -132,7 +125,6 @@ const styles = {
     padding: "10px",
     borderRadius: "6px",
     border: "1px solid #ccc",
-    fontSize: "14px",
   },
   button: {
     padding: "10px",
@@ -141,17 +133,6 @@ const styles = {
     border: "none",
     borderRadius: "6px",
     cursor: "pointer",
-    fontSize: "14px",
-  },
-  loginText: {
-    marginTop: "15px",
-    textAlign: "center",
-    fontSize: "14px",
-  },
-  link: {
-    color: "#007bff",
-    textDecoration: "none",
-    fontWeight: "bold",
   },
 };
 
